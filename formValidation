@@ -1,0 +1,183 @@
+<?php
+
+// server side validation with php
+
+    $error = "";
+    $successMessage = "";
+
+    if($_POST) {
+        
+        
+        
+        if(!$_POST["email"]) {
+            
+            $error.= "An email address is required. <br>";
+            
+        }
+        
+        if(!$_POST["subject"]) {
+            
+            $error.= "A subject is required. <br>";
+        }
+        
+        if(!$_POST["askUsSection"]) {
+            
+            $error.= "You have to ask us something.<br>";
+        }
+
+        if ($_POST["email"] && filter_var($_POST["email"], FILTER_VALIDATE_EMAIL) === false) {
+            
+          $error.= "The email adress is invalid";
+        }
+        
+        if ($error == "") {
+            
+            $emailTo = "chaamail@yahoo.com";
+            $subject = $_POST["subject"];
+            $content = $_POST["askUsSection"];
+            $headers = "From : ".$_POST["email"];
+            
+            if (mail($emailTo, $subject, $content, $headers)) {
+                
+                $successMessage = "Your question was successfully sent! We will get back to you ASAP";
+            } else {
+                $error = "Your message could not be sent, please try again later";
+            }
+        }
+
+    }
+
+        
+    
+?>
+
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Form Validation 2.0</title>
+  </head>
+  <body>
+      
+      <div class = "container">
+      
+          <div class = "header">   
+            <h1>
+
+                Get in Touch!
+
+            </h1>
+              
+<!--              div that will contain success message-->
+              
+            <div class="alert alert-success" role="alert" id = "success">
+                <? echo $successMessage; ?>
+            </div>
+              
+              
+              
+    <!--      Message to be showing error messages occurs-->
+
+            <div class="alert alert-danger" role="alert" id = "error"><strong><p>These errors have occurred: </p></strong>
+              <? echo $error; ?>
+            </div>
+
+    
+
+    <!--   E-mail address, subject, what would you like to ask us?  -->
+
+          <form method = "post">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" class="form-control" id="email" name = "email" aria-describedby="emailHelp" placeholder="Enter email">
+                <small id="email" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              </div>
+
+              <div class="form-group">
+                  <label for="validationDefault01">Subject</label>
+                  <input type="text" class="form-control" id="subject"  name = "subject">
+                </div>
+
+              <div class="form-group">
+                <label for="exampleFormControlTextarea1">What would you like to ask us?</label>
+                <textarea class="form-control" id="askUsSection" name = "askUsSection" rows="3"></textarea>
+              </div>
+
+              <button id = "submit" class="btn btn-primary" type="submit">Submit form</button>
+
+          </form>
+ 
+      </div>
+    
+      
+      
+
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      
+      
+     <script type = "text/javascript">
+          
+          $("#error").hide();
+          $("#success").hide();
+          
+//          Prevent form from submitting uncecessarily and reloading                page
+      
+        $("form").submit(function (e) {
+            
+            
+            var error = "";
+            var askUsContent = "";
+            
+//            two if statements that concatenate the error message if               fields are empty
+            
+            if ($("#subject").val() == "") {
+                
+                error += " the subject field is required.<br> ";
+            }
+            
+            if ($("#email").val() == "") {
+                
+                error += " the e-mail field is required.<br> ";
+            }
+            
+            if ($("#askUsSection").val() == "") {
+                
+                error += " The ask us field is required ";
+            }
+            
+//            if error var is not empty the error div needs to be                   active
+            
+            if(error != "") {
+                
+                $("#error").html(error);
+                $("#error").show();
+                $("#success").hide();
+                
+                return false;
+                
+            }
+            
+//           if both textbox fields are not empty the error div needs              to be hidden, e-mail validation is built into bootstrap                so no need to check manually
+            
+            if($("#subject").val() != "" && $("#askUsSection").val() != "" && $("#email").val() != "" ) {
+                
+                $("#error").hide();
+                $("#success").show();
+                return true;
+    
+            }
+
+            
+        });
+      </script>
+
+  </body>
+</html>
